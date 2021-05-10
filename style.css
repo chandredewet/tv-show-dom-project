@@ -1,3 +1,34 @@
+body{
+background-color:#272640;
+}
+
 #root {
   color: red;
+  display: flex;
+  flex-wrap: wrap;
+}
+  
+.sizeArea{
+  
+  width: 33%;
+  display: flex;
+  margin: auto;
+  flex-direction: column;
+  
+  
+}
+
+.epCardDetails {
+  font-family: "Helvetica", Times, sans-serif;
+  background-color:#272640;
+  text-align:left;
+  height: 50px;
+}
+
+
+.epCardSummary {
+  font-family: "Helvetica", Times, sans-serif;
+  height: 200px;
+  background-color: #B8D0EB;
+  
 }
