@@ -37,15 +37,10 @@ function makePageForEpisodes(episodeList) {
   searchDescEl.className = "searchDescEl";
 
   //level 300
-let selectContainerEl = document.createElement("div");
-selectContainerEl.className = "selectContainer";
-searchBarEl.appendChild(selectContainerEl);
 
   let searchSelectEl = document.createElement("select");
-  selectContainerEl.appendChild(searchSelectEl);
+  searchBarEl.appendChild(searchSelectEl);
   searchSelectEl.className = "searchSelect";
-  // searchInputEl.placeholder = " Search for Episode";
-  // searchInputEl.name = "searchInput";
 
   //level 100 display of episode cards creation
   const showsEl = document.createElement("section");
@@ -53,7 +48,7 @@ searchBarEl.appendChild(selectContainerEl);
   rootElem.appendChild(showsEl);
 
   //initial showing of episodes - refactored in level 200 to make easier for reusability
-  showEpisodes(episodeList, showsEl);
+  showEpisodes(episodeList, showsEl, searchSelectEl);
 
   //level 200
   // Add a "live" search input:
@@ -72,7 +67,7 @@ searchBarEl.appendChild(selectContainerEl);
     }
 
     if (filterList.length) {
-      showEpisodes(filterList, showsEl);
+      showEpisodes(filterList, showsEl, searchSelectEl);
     } else {
       let noEpisodeP = document.createElement("p");
       noEpisodeP.textContent = "There are No Such Episodes, Try again";
@@ -81,7 +76,7 @@ searchBarEl.appendChild(selectContainerEl);
   });
 }
 
-function showEpisodes(showsList, showsEl) {
+function showEpisodes(showsList, showsEl, searchSelectEl) {
   console.log(showsList.length);
   document.getElementById("myResults");
   myResults.textContent = showsList.length;
@@ -117,6 +112,11 @@ function showEpisodes(showsList, showsEl) {
     let episodeCode =
       episode.season.toString().padStart(2, "0") +
       episode.number.toString().padStart(2, "0");
+
+    //level 300
+    let searchSelectOptEl = document.createElement("option");
+    searchSelectOptEl.text = `S${episodeCode} - ${episode.name}`;
+    searchSelectEl.add(searchSelectOptEl);
 
     titleEl.textContent += `${episode.name} - S${episodeCode}`;
     articleEl.append(titleEl);
