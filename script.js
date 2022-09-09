@@ -25,11 +25,21 @@ function makePageForEpisodes(episodeList) {
   headingEl.className = "headingEl";
   rootElem.appendChild(headingEl);
 
-  let count = 0;
+  let searchBarEl = document.createElement("div");
+  searchBarEl.className = "searchBar";
+  rootElem.appendChild(searchBarEl);
+  let searchDescEl = document.createElement("p");
+  searchDescEl.textContent = "Displaying 10 of 73 Results";
+  searchBarEl.appendChild(searchDescEl);
+  searchDescEl.className = "searchDescEl";
+  let searchInputEl = document.createElement("input");
+  searchBarEl.appendChild(searchInputEl);
+  searchInputEl.className = "searchInput";
 
   const showsEl = document.createElement("section");
   showsEl.className = "showsEl";
   rootElem.appendChild(showsEl);
+  let count = 0;
 
   episodeList.forEach((episode) => {
     let articleEl = document.createElement("article");
