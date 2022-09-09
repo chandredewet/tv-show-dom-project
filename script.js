@@ -49,7 +49,9 @@ function makePageForEpisodes(episodeList) {
       );
     });
     //research better way
-    showsEl.innerHTML = "";
+    while (showsEl.firstChild) {
+      showsEl.removeChild(showsEl.firstChild);
+    }
     showEpisodes(filterList, showsEl);
     // searchDescEl.textContent = filterList.length;
   });
