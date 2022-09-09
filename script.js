@@ -9,7 +9,6 @@ window.onload = setup;
 function makePageForEpisodes(episodeList) {
   //display area of the website
   const rootElem = document.getElementById("root");
-
   //level 100 additional heading
   let headingEl = document.createElement("div");
   headingEl.innerText = "tv show project";
@@ -20,15 +19,33 @@ function makePageForEpisodes(episodeList) {
   let searchBarEl = document.createElement("div");
   searchBarEl.className = "searchBar";
   rootElem.appendChild(searchBarEl);
-  let searchDescEl = document.createElement("p");
-  searchDescEl.textContent = "Displaying 10 of 73 Results";
-  searchBarEl.appendChild(searchDescEl);
-  searchDescEl.className = "searchDescEl";
+
+  let inputContainerEl = document.createElement("div");
+  inputContainerEl.className = "inputContainer";
+  searchBarEl.appendChild(inputContainerEl);
+
   let searchInputEl = document.createElement("input");
-  searchBarEl.appendChild(searchInputEl);
+  inputContainerEl.appendChild(searchInputEl);
   searchInputEl.className = "searchInput";
   searchInputEl.placeholder = " Search for Episode";
   searchInputEl.name = "searchInput";
+
+  let searchDescEl = document.createElement("div");
+  let results = episodeList.length;
+  searchDescEl.innerHTML = `   Displaying  <span id="myResults">${results}</span> of ${results} Results`;
+  inputContainerEl.appendChild(searchDescEl);
+  searchDescEl.className = "searchDescEl";
+
+  //level 300
+let selectContainerEl = document.createElement("div");
+selectContainerEl.className = "selectContainer";
+searchBarEl.appendChild(selectContainerEl);
+
+  let searchSelectEl = document.createElement("select");
+  selectContainerEl.appendChild(searchSelectEl);
+  searchSelectEl.className = "searchSelect";
+  // searchInputEl.placeholder = " Search for Episode";
+  // searchInputEl.name = "searchInput";
 
   //level 100 display of episode cards creation
   const showsEl = document.createElement("section");
@@ -41,23 +58,33 @@ function makePageForEpisodes(episodeList) {
   //level 200
   // Add a "live" search input:
   // Only episodes whose summary OR name contains the search term should be displayed
+
   searchInputEl.addEventListener("input", () => {
     let filterList = episodeList.filter((el) => {
+      let inputChar = searchInputEl.value;
       return (
-        el.name.includes(searchInputEl.value) ||
-        el.summary.includes(searchInputEl.value)
+        el.name.includes(inputChar) || el.summary.includes(searchInputEl.value)
       );
     });
-    //research better way
+
     while (showsEl.firstChild) {
       showsEl.removeChild(showsEl.firstChild);
     }
-    showEpisodes(filterList, showsEl);
-    // searchDescEl.textContent = filterList.length;
+
+    if (filterList.length) {
+      showEpisodes(filterList, showsEl);
+    } else {
+      let noEpisodeP = document.createElement("p");
+      noEpisodeP.textContent = "There are No Such Episodes, Try again";
+      showsEl.appendChild(noEpisodeP);
+    }
   });
 }
 
 function showEpisodes(showsList, showsEl) {
+  console.log(showsList.length);
+  document.getElementById("myResults");
+  myResults.textContent = showsList.length;
   //level 100 counter for colours
   let cardColours = [
     "#e2e2df",
@@ -109,18 +136,4 @@ function showEpisodes(showsList, showsEl) {
   });
 }
 
-// let updateTitleBtn = document.querySelector("#updateTitleBtn");
-
-// updateTitleBtn.addEventListener("click", function () {
-//   let inputBox = document.querySelector("#titleInput");
-//   let title = inputBox.value;
-
-//   let titleElement = document.querySelector("#lessonTitle");
-//   titleElement.innerText = title;
-//   inputBox.value = title;
-// });
-
-// The search should be case-insensitive
-// The display should update immediately after each keystroke changes the input.
-// Display how many episodes match the current search
-// If the search box is cleared, all episodes should be shown.
+//outstanding The search should be case-insensitive
