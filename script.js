@@ -50,6 +50,15 @@ function makePageForEpisodes(episodeList) {
   //initial showing of episodes - refactored in level 200 to make easier for reusability
   showEpisodes(episodeList, showsEl, searchSelectEl);
 
+  searchSelectEl.addEventListener("change", function () {
+    // showEpisodes(showsList[searchSelectOptEl.value], showsEl, searchSelectEl);
+    let singleArr = [];
+    singleArr.push(episodeList[this.value]);
+    while (showsEl.firstChild) {
+      showsEl.removeChild(showsEl.firstChild);
+    }
+    showEpisodes(singleArr, showsEl, searchSelectEl);
+  });
   //level 200
   // Add a "live" search input:
   // Only episodes whose summary OR name contains the search term should be displayed
@@ -77,7 +86,6 @@ function makePageForEpisodes(episodeList) {
 }
 
 function showEpisodes(showsList, showsEl, searchSelectEl) {
-  console.log(showsList.length);
   document.getElementById("myResults");
   myResults.textContent = showsList.length;
   //level 100 counter for colours
@@ -94,6 +102,7 @@ function showEpisodes(showsList, showsEl, searchSelectEl) {
     "#f9c6c9",
   ];
   let count = 0;
+  let selectCount = 0;
 
   showsList.forEach((episode) => {
     let articleEl = document.createElement("article");
@@ -116,6 +125,8 @@ function showEpisodes(showsList, showsEl, searchSelectEl) {
     //level 300
     let searchSelectOptEl = document.createElement("option");
     searchSelectOptEl.text = `S${episodeCode} - ${episode.name}`;
+    searchSelectOptEl.value = selectCount;
+    selectCount++;
     searchSelectEl.add(searchSelectOptEl);
 
     titleEl.textContent += `${episode.name} - S${episodeCode}`;
