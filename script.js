@@ -9,6 +9,7 @@ window.onload = setup;
 function makePageForEpisodes(episodeList) {
   //display area of the website
   const rootElem = document.getElementById("root");
+
   //level 100 additional heading
   let headingEl = document.createElement("div");
   headingEl.innerText = "tv show project";
@@ -36,11 +37,34 @@ function makePageForEpisodes(episodeList) {
   inputContainerEl.appendChild(searchDescEl);
   searchDescEl.className = "searchDescEl";
 
-  //level 300
+  //level 200
+  // Add a "live" search input:
+  // Only episodes whose summary OR name contains the search term should be displayed
+  searchInputEl.addEventListener("input", () => {
+    let filterList = episodeList.filter((el) => {
+      let inputChar = searchInputEl.value;
+      return (
+        el.name.includes(inputChar) || el.summary.includes(searchInputEl.value)
+      );
+    });
+    if (filterList.length) {
+      showEpisodes(filterList, showsEl, searchSelectEl);
+    } else {
+      while (showsEl.firstChild) {
+        showsEl.removeChild(showsEl.firstChild);
+      }
+      document.getElementById("myResults");
+      myResults.textContent = "0";
+    }
+  });
 
+  //level 300
   let searchSelectEl = document.createElement("select");
   searchBarEl.appendChild(searchSelectEl);
   searchSelectEl.className = "searchSelect";
+  let searchSelectOptEl = document.createElement("option");
+  searchSelectOptEl.text = `Click for All Episodes`;
+  searchSelectEl.add(searchSelectOptEl);
 
   //level 100 display of episode cards creation
   const showsEl = document.createElement("section");
@@ -50,44 +74,28 @@ function makePageForEpisodes(episodeList) {
   //initial showing of episodes - refactored in level 200 to make easier for reusability
   showEpisodes(episodeList, showsEl, searchSelectEl);
 
+  //event listener for select element
   searchSelectEl.addEventListener("change", function () {
-    // showEpisodes(showsList[searchSelectOptEl.value], showsEl, searchSelectEl);
-    let singleArr = [];
-    singleArr.push(episodeList[this.value]);
-    while (showsEl.firstChild) {
-      showsEl.removeChild(showsEl.firstChild);
-    }
-    showEpisodes(singleArr, showsEl, searchSelectEl);
-  });
-  //level 200
-  // Add a "live" search input:
-  // Only episodes whose summary OR name contains the search term should be displayed
-
-  searchInputEl.addEventListener("input", () => {
-    let filterList = episodeList.filter((el) => {
-      let inputChar = searchInputEl.value;
-      return (
-        el.name.includes(inputChar) || el.summary.includes(searchInputEl.value)
-      );
-    });
-
-    while (showsEl.firstChild) {
-      showsEl.removeChild(showsEl.firstChild);
-    }
-
-    if (filterList.length) {
-      showEpisodes(filterList, showsEl, searchSelectEl);
+    if (this.value === "Click for All Episodes") {
+      showEpisodes(episodeList, showsEl, searchSelectEl);
     } else {
-      let noEpisodeP = document.createElement("p");
-      noEpisodeP.textContent = "There are No Such Episodes, Try again";
-      showsEl.appendChild(noEpisodeP);
+      let singleArr = [];
+      singleArr.push(episodeList[this.value]);
+      showEpisodes(singleArr, showsEl, searchSelectEl);
     }
   });
 }
 
 function showEpisodes(showsList, showsEl, searchSelectEl) {
+  //clear display Cards
+  while (showsEl.firstChild) {
+    showsEl.removeChild(showsEl.firstChild);
+  }
+
+  //update result amount
   document.getElementById("myResults");
   myResults.textContent = showsList.length;
+
   //level 100 counter for colours
   let cardColours = [
     "#e2e2df",
@@ -104,18 +112,15 @@ function showEpisodes(showsList, showsEl, searchSelectEl) {
   let count = 0;
   let selectCount = 0;
 
+  //show episodes
   showsList.forEach((episode) => {
     let articleEl = document.createElement("article");
     articleEl.style.backgroundColor = cardColours[count];
+    articleEl.className = "movieCard";
     let titleEl = document.createElement("h2");
 
     //repeated looping through colours
-    if (count < cardColours.length - 1) {
-      count++;
-    } else {
-      count = 0;
-    }
-    articleEl.className = "movieCard";
+    count < cardColours.length - 1 ? count++ : (count = 0);
 
     //the episode's name, the season number, the episode number
     let episodeCode =
