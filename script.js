@@ -44,7 +44,9 @@ function makePageForEpisodes(episodeList) {
     let filterList = episodeList.filter((el) => {
       let inputChar = searchInputEl.value;
       return (
-        el.name.includes(inputChar) || el.summary.includes(searchInputEl.value)
+        el.name.toUpperCase().includes(inputChar.toUpperCase()) ||
+        el.summary.toUpperCase().includes(inputChar.toUpperCase())
+        
       );
     });
     if (filterList.length) {
