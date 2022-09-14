@@ -1,4 +1,5 @@
 //You can edit ALL of the code here
+
 function setup() {
   const allEpisodes = getAllEpisodes();
   makePageForEpisodes(allEpisodes);
@@ -8,34 +9,27 @@ window.onload = setup;
 
 function makePageForEpisodes(episodeList) {
   //display area of the website
+
   const rootElem = document.getElementById("root");
 
-  //level 100 additional heading
-  let headingEl = document.createElement("div");
-  headingEl.innerText = "tv show project";
-  headingEl.className = "headingEl";
+  let headingEl = createDiv("headingEl", "tv show project"); //level 100 additional heading
   rootElem.appendChild(headingEl);
 
-  //level 200 search bar creation
-  let searchBarEl = document.createElement("div");
-  searchBarEl.className = "searchBar";
+  let searchBarEl = createDiv("searchBar"); //level 200 search bar creation
   rootElem.appendChild(searchBarEl);
 
-  let inputContainerEl = document.createElement("div");
-  inputContainerEl.className = "inputContainer";
+  let inputContainerEl = createDiv("inputContainer");
   searchBarEl.appendChild(inputContainerEl);
 
-  let searchInputEl = document.createElement("input");
+  let searchInputEl = createInput("searchInput", " Search for Episode");
   inputContainerEl.appendChild(searchInputEl);
-  searchInputEl.className = "searchInput";
-  searchInputEl.placeholder = " Search for Episode";
-  searchInputEl.name = "searchInput";
 
-  let searchDescEl = document.createElement("div");
   let results = episodeList.length;
-  searchDescEl.innerHTML = `   Displaying  <span id="myResults">${results}</span> of ${results} Results`;
+  let searchDescEl = createSearchDiv(
+    "searchDescEl",
+    `   Displaying  <span id="myResults">${results}</span> of ${results} Results`
+  );
   inputContainerEl.appendChild(searchDescEl);
-  searchDescEl.className = "searchDescEl";
 
   //level 200
   // Add a "live" search input:
@@ -154,4 +148,29 @@ function showEpisodes(showsList, showsEl, searchSelectEl) {
   });
 }
 
-//outstanding The search should be case-insensitive
+function createDiv(elName, elText) {
+  let newEl = document.createElement("div");
+  newEl.className = elName;
+  if (elText) {
+    newEl.innerText = elText;
+  }
+  return newEl;
+}
+
+function createInput(elName, elText) {
+  let newInput = document.createElement("input");
+  newInput.className = elName;
+  newInput.placeholder = elText;
+  newInput.name = elName;
+  console.log("yay");
+  return newInput;
+}
+
+function createSearchDiv(elName, elText) {
+  let newEl = document.createElement("div");
+  newEl.className = elName;
+  if (elText) {
+    newEl.innerHTML = elText;
+  }
+  return newEl;
+}
