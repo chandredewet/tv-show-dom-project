@@ -1,8 +1,28 @@
 //You can edit ALL of the code here
 
 function setup() {
-  const allEpisodes = getAllEpisodes();
-  makePageForEpisodes(allEpisodes);
+  let allEpisodes;
+  fetch("https://api.tvmaze.com/shows/527/episodes")
+    .then((response) => {
+      if (response.status >= 200 && response.status <= 299) {
+        console.log(response);
+        return response.json();
+      } else {
+        throw new Error(
+          `Encountered something unexpected: ${response.status} ${response.statusText}`
+        );
+      }
+    })
+    .then((jsonResponse) => {
+      // do whatever you want with the JSON response
+      allEpisodes = jsonResponse;
+      makePageForEpisodes(allEpisodes);
+      console.log(allEpisodes);
+    })
+    .catch((error) => {
+      // Handle the error
+      console.log(error);
+    });
 }
 
 window.onload = setup;
@@ -84,6 +104,7 @@ function makePageForEpisodes(episodeList) {
 
 function showEpisodes(showsList, showsEl, searchSelectEl) {
   //clear display Cards
+
   while (showsEl.firstChild) {
     showsEl.removeChild(showsEl.firstChild);
   }
@@ -105,11 +126,10 @@ function showEpisodes(showsList, showsEl, searchSelectEl) {
     "#f2c6de",
     "#f9c6c9",
   ];
-  let count = 0;
-  let selectCount = 0;
 
+  let count = 0;
   //show episodes
-  showsList.forEach((episode) => {
+  showsList.forEach((episode, inx) => {
     let articleEl = document.createElement("article");
     articleEl.style.backgroundColor = cardColours[count];
     articleEl.className = "movieCard";
@@ -126,8 +146,7 @@ function showEpisodes(showsList, showsEl, searchSelectEl) {
     //level 300
     let searchSelectOptEl = document.createElement("option");
     searchSelectOptEl.text = `S${episodeCode} - ${episode.name}`;
-    searchSelectOptEl.value = selectCount;
-    selectCount++;
+    searchSelectOptEl.value = inx;
     searchSelectEl.add(searchSelectOptEl);
 
     titleEl.textContent += `${episode.name} - S${episodeCode}`;
