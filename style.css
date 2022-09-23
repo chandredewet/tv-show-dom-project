@@ -78,10 +78,15 @@ h2 {
   border: #f7d9c4 2px solid;
   border-radius: 5px;
   background-color: #f7d9c4;
-  width: 500px;
+  width: 270px;
   height: 39px;
   font-size: 20px;
   color: black;
   padding: 5px 0 0 0;
   align-items: baseline;
+}
+
+#showNameSelect {
+  position: relative;
+  left: 30px;
 }

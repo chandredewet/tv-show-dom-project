@@ -1,11 +1,17 @@
 //You can edit ALL of the code here
 
 function setup() {
-  let allEpisodes;
-  fetch("https://api.tvmaze.com/shows/527/episodes")
+  // let allEpisodes;
+  getDataFromAPI("https://api.tvmaze.com/shows/527/episodes");
+}
+
+window.onload = setup;
+
+function getDataFromAPI(myAPI) {
+  fetch(myAPI)
     .then((response) => {
       if (response.status >= 200 && response.status <= 299) {
-        console.log(response);
+        console.log("success", response);
         return response.json();
       } else {
         throw new Error(
@@ -15,17 +21,14 @@ function setup() {
     })
     .then((jsonResponse) => {
       // do whatever you want with the JSON response
-      allEpisodes = jsonResponse;
+      let allEpisodes = jsonResponse;
       makePageForEpisodes(allEpisodes);
-      console.log(allEpisodes);
     })
     .catch((error) => {
       // Handle the error
       console.log(error);
     });
 }
-
-window.onload = setup;
 
 function makePageForEpisodes(episodeList) {
   //display area of the website
@@ -49,6 +52,7 @@ function makePageForEpisodes(episodeList) {
     "searchDescEl",
     `   Displaying  <span id="myResults">${results}</span> of ${results} Results`
   );
+
   inputContainerEl.appendChild(searchDescEl);
 
   //level 200
@@ -74,13 +78,13 @@ function makePageForEpisodes(episodeList) {
     }
   });
 
-  //level 300
-  let searchSelectEl = document.createElement("select");
+  //level 300 400
+  let showsSelectEl = createSelect(`Click for All Shows`);
+  searchBarEl.appendChild(showsSelectEl);
+  showsSelectEl.setAttribute("id", "showNameSelect");
+
+  let searchSelectEl = createSelect(`Click for All Episodes`);
   searchBarEl.appendChild(searchSelectEl);
-  searchSelectEl.className = "searchSelect";
-  let searchSelectOptEl = document.createElement("option");
-  searchSelectOptEl.text = `Click for All Episodes`;
-  searchSelectEl.add(searchSelectOptEl);
 
   //level 100 display of episode cards creation
   const showsEl = document.createElement("section");
@@ -88,21 +92,33 @@ function makePageForEpisodes(episodeList) {
   rootElem.appendChild(showsEl);
 
   //initial showing of episodes - refactored in level 200 to make easier for reusability
-  showEpisodes(episodeList, showsEl, searchSelectEl);
+  showEpisodes(episodeList, showsEl, searchSelectEl, showsSelectEl);
 
   //event listener for select element
   searchSelectEl.addEventListener("change", function () {
     if (this.value === "Click for All Episodes") {
-      showEpisodes(episodeList, showsEl, searchSelectEl);
+      showEpisodes(episodeList, showsEl, searchSelectEl, showsSelectEl);
     } else {
       let singleArr = [];
       singleArr.push(episodeList[this.value]);
-      showEpisodes(singleArr, showsEl, searchSelectEl);
+      showEpisodes(singleArr, showsEl, searchSelectEl, showsSelectEl);
+    }
+  });
+
+  showsSelectEl.addEventListener("change", function () {
+    if (this.value === "Click for All Shows") {
+      showEpisodes(episodeList, showsEl, searchSelectEl, showsSelectEl);
+      console.log("click all shows");
+    } else {
+      let singleArr = [];
+      singleArr.push(getAllShows()[this.value]);
+      console.log("singleshow", singleArr);
+      showEpisodes(singleArr, showsEl, searchSelectEl, showsSelectEl);
     }
   });
 }
 
-function showEpisodes(showsList, showsEl, searchSelectEl) {
+function showEpisodes(showsList, showsEl, searchSelectEl, showsSelectEl) {
   //clear display Cards
 
   while (showsEl.firstChild) {
@@ -134,7 +150,7 @@ function showEpisodes(showsList, showsEl, searchSelectEl) {
     articleEl.style.backgroundColor = cardColours[count];
     articleEl.className = "movieCard";
     let titleEl = document.createElement("h2");
-
+    //console.log(episode, inx);
     //repeated looping through colours
     count < cardColours.length - 1 ? count++ : (count = 0);
 
@@ -148,6 +164,12 @@ function showEpisodes(showsList, showsEl, searchSelectEl) {
     searchSelectOptEl.text = `S${episodeCode} - ${episode.name}`;
     searchSelectOptEl.value = inx;
     searchSelectEl.add(searchSelectOptEl);
+
+    //level 400
+    let showsSelectOptEl = document.createElement("option");
+    showsSelectOptEl.text = getAllShows()[inx].name;
+    showsSelectOptEl.value = inx;
+    showsSelectEl.add(showsSelectOptEl);
 
     titleEl.textContent += `${episode.name} - S${episodeCode}`;
     articleEl.append(titleEl);
@@ -181,7 +203,6 @@ function createInput(elName, elText) {
   newInput.className = elName;
   newInput.placeholder = elText;
   newInput.name = elName;
-  console.log("yay");
   return newInput;
 }
 
@@ -192,4 +213,13 @@ function createSearchDiv(elName, elText) {
     newEl.innerHTML = elText;
   }
   return newEl;
+}
+
+function createSelect(topOption) {
+  let newSelect = document.createElement("select");
+  newSelect.className = "searchSelect";
+  let searchSelectOptEl = document.createElement("option");
+  searchSelectOptEl.text = topOption;
+  newSelect.add(searchSelectOptEl);
+  return newSelect;
 }
