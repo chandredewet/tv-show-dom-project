@@ -4,6 +4,12 @@
 let results = 0;
 
 const rootElem = document.getElementById("root");
+let testSelect = document.createElement("select");
+rootElem.appendChild(testSelect);
+let testOptEl = document.createElement("option");
+testOptEl.text = `Option 0`;
+testOptEl.value = 0;
+testSelect.add(testOptEl);
 let headingEl = createDiv("headingEl", "tv show project"); //level 100
 rootElem.appendChild(headingEl);
 let searchBarEl = createDiv("searchBar"); //level 200 search bar creation
@@ -25,13 +31,19 @@ const showsEl = document.createElement("section");
 showsEl.className = "showsEl";
 rootElem.appendChild(showsEl);
 
+let testOptEl1 = document.createElement("option");
+testOptEl1.text = `Option TWOOOO`;
+testOptEl1.value = 0;
+testSelect.add(testOptEl1);
+
 showsSelectEl.addEventListener("change", function () {
   if (this.value === "Click for All Shows") {
     showEpisodes(episodeList);
   } else {
-    console.log("I happen");
     let SHOW_ID = getAllShows()[this.value].id;
     let apiUrl = `https://api.tvmaze.com/shows/${SHOW_ID}/episodes`;
+    //https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection
+    searchSelectEl.options.length = 1;
     getDataFromAPI(apiUrl);
   }
 });
@@ -149,12 +161,6 @@ function showEpisodes(showsList) {
       episode.season.toString().padStart(2, "0") +
       episode.number.toString().padStart(2, "0");
 
-    //level 300
-    let searchSelectOptEl = document.createElement("option");
-    searchSelectOptEl.text = `S${episodeCode} - ${episode.name}`;
-    searchSelectOptEl.value = inx;
-    searchSelectEl.add(searchSelectOptEl);
-
     //level 400
     let showsSelectOptEl = document.createElement("option");
     showsSelectOptEl.text = getAllShows()[inx].name;
@@ -164,10 +170,16 @@ function showEpisodes(showsList) {
     titleEl.textContent += `${episode.name} - S${episodeCode}`;
     articleEl.append(titleEl);
 
+    //level 300
+    let searchSelectOptEl = document.createElement("option");
+    searchSelectOptEl.text = `S${episodeCode} - ${episode.name}`;
+    searchSelectOptEl.value = inx;
+    searchSelectEl.add(searchSelectOptEl);
+
     // the episode's medium-sized image
     let imgEl = document.createElement("img");
     imgEl.src = episode.image.medium;
-    imgEl.alt = `Image of Game of Thrones Episode: S${episode.season} E${episode.number}`;
+    imgEl.alt = `Image of S${episode.season} E${episode.number}`;
     articleEl.append(imgEl);
 
     // the episode's summary text
