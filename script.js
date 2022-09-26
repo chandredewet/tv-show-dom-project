@@ -4,12 +4,6 @@
 let results = 0;
 
 const rootElem = document.getElementById("root");
-let testSelect = document.createElement("select");
-rootElem.appendChild(testSelect);
-let testOptEl = document.createElement("option");
-testOptEl.text = `Option 0`;
-testOptEl.value = 0;
-testSelect.add(testOptEl);
 let headingEl = createDiv("headingEl", "tv show project"); //level 100
 rootElem.appendChild(headingEl);
 let searchBarEl = createDiv("searchBar"); //level 200 search bar creation
@@ -30,11 +24,6 @@ searchBarEl.appendChild(searchSelectEl);
 const showsEl = document.createElement("section");
 showsEl.className = "showsEl";
 rootElem.appendChild(showsEl);
-
-let testOptEl1 = document.createElement("option");
-testOptEl1.text = `Option TWOOOO`;
-testOptEl1.value = 0;
-testSelect.add(testOptEl1);
 
 showsSelectEl.addEventListener("change", function () {
   if (this.value === "Click for All Shows") {
