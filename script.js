@@ -2,6 +2,7 @@
 
 //create certain elements globally to not need to keep passing elements
 let results = 0;
+let allShows;
 
 const rootElem = document.getElementById("root");
 let headingEl = createDiv("headingEl", "tv show project"); //level 100
@@ -29,7 +30,7 @@ showsSelectEl.addEventListener("change", function () {
   if (this.value === "Click for All Shows") {
     showEpisodes(episodeList);
   } else {
-    let SHOW_ID = getAllShows()[this.value].id;
+    let SHOW_ID = allShows[this.value].id;
     let apiUrl = `https://api.tvmaze.com/shows/${SHOW_ID}/episodes`;
     //https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection
     searchSelectEl.options.length = 1;
@@ -40,6 +41,28 @@ showsSelectEl.addEventListener("change", function () {
 function setup() {
   let apiUrl = `https://api.tvmaze.com/shows/527/episodes`;
   getDataFromAPI(apiUrl);
+
+  //level 400
+  allShows = getAllShows().sort((a, b) => {
+    const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+    const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+
+    // names must be equal
+    return 0;
+  });
+
+  allShows.forEach((el, inx) => {
+    let showsSelectOptEl = document.createElement("option");
+    showsSelectOptEl.text = allShows[inx].name;
+    showsSelectOptEl.value = inx;
+    showsSelectEl.add(showsSelectOptEl);
+  });
 }
 
 window.onload = setup;
@@ -85,6 +108,7 @@ function makePageForEpisodes(episodeList) {
         el.summary.toUpperCase().includes(inputChar.toUpperCase())
       );
     });
+
     if (filterList.length) {
       showEpisodes(filterList);
     } else {
@@ -149,13 +173,6 @@ function showEpisodes(showsList) {
     let episodeCode =
       episode.season.toString().padStart(2, "0") +
       episode.number.toString().padStart(2, "0");
-
-    //level 400
-    let showsSelectOptEl = document.createElement("option");
-    showsSelectOptEl.text = getAllShows()[inx].name;
-    showsSelectOptEl.value = inx;
-    showsSelectEl.add(showsSelectOptEl);
-
     titleEl.textContent += `${episode.name} - S${episodeCode}`;
     articleEl.append(titleEl);
 
@@ -166,14 +183,24 @@ function showEpisodes(showsList) {
     searchSelectEl.add(searchSelectOptEl);
 
     // the episode's medium-sized image
-    let imgEl = document.createElement("img");
-    imgEl.src = episode.image.medium;
-    imgEl.alt = `Image of S${episode.season} E${episode.number}`;
-    articleEl.append(imgEl);
+    if (episode.image === null || !episode.image.medium) {
+      let imgPEl = document.createElement("p");
+      imgPEl.innerHTML = "No suitable image for this episode.";
+      articleEl.append(imgPEl);
+    } else {
+      let imgEl = document.createElement("img");
+      imgEl.src = episode.image.medium;
+      imgEl.alt = `Image of S${episode.season} E${episode.number}`;
+      articleEl.append(imgEl);
+    }
 
     // the episode's summary text
     let summEl = document.createElement("p");
-    summEl.innerHTML = episode.summary;
+    if (!episode.summary) {
+      summEl.innerHTML = "No description for this episode.";
+    } else {
+      summEl.innerHTML = episode.summary;
+    }
     articleEl.append(summEl);
     showsEl.appendChild(articleEl);
   });
