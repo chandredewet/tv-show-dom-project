@@ -4,45 +4,58 @@
 let results = 0;
 let allShows;
 
-const rootElem = document.getElementById("root");
-let headingEl = createDiv("headingEl", "tv show project"); //level 100
-rootElem.appendChild(headingEl);
-let searchBarEl = createDiv("searchBar"); //level 200 search bar creation
-rootElem.appendChild(searchBarEl);
-let inputContainerEl = createDiv("inputContainer");
-searchBarEl.appendChild(inputContainerEl);
-let searchInputEl = createInput("searchInput", " Search for Episode");
-inputContainerEl.appendChild(searchInputEl);
-let searchDescEl = createSearchDiv("searchDescEl");
-inputContainerEl.appendChild(searchDescEl);
-//level 300 400
-let showsSelectEl = createSelect(`Click for All Shows`);
-searchBarEl.appendChild(showsSelectEl);
-showsSelectEl.setAttribute("id", "showNameSelect");
-let searchSelectEl = createSelect(`Click for All Episodes`);
-searchBarEl.appendChild(searchSelectEl);
+//global dom elements
+let rootElem;
+let headingEl; //level 100
+let searchBarEl; //level 200 search bar creation
+let inputContainerEl;
+let searchInputEl;
+let searchDescEl;
+let showsSelectEl;
+let searchSelectEl;
 //level 100 display of episode cards creation
-const showsEl = document.createElement("section");
-showsEl.className = "showsEl";
-rootElem.appendChild(showsEl);
-
-showsSelectEl.addEventListener("change", function () {
-  if (this.value === "Click for All Shows") {
-    showEpisodes(episodeList);
-  } else {
-    let SHOW_ID = allShows[this.value].id;
-    let apiUrl = `https://api.tvmaze.com/shows/${SHOW_ID}/episodes`;
-    //https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection
-    searchSelectEl.options.length = 1;
-    getDataFromAPI(apiUrl);
-  }
-});
+let showsEl;
 
 function setup() {
+  
+  rootElem = document.getElementById("root");
+  headingEl = createDiv("headingEl", "tv show project"); //level 100
+  rootElem.appendChild(headingEl);
+  searchBarEl = createDiv("searchBar"); //level 200 search bar creation
+  rootElem.appendChild(searchBarEl);
+  inputContainerEl = createDiv("inputContainer");
+  searchBarEl.appendChild(inputContainerEl);
+  searchInputEl = createInput("searchInput", " Search for Episode");
+  inputContainerEl.appendChild(searchInputEl);
+  searchDescEl = createSearchDiv("searchDescEl");
+  inputContainerEl.appendChild(searchDescEl);
+  //level 300 400
+  showsSelectEl = createSelect(`Click for All Shows`);
+  searchBarEl.appendChild(showsSelectEl);
+  showsSelectEl.setAttribute("id", "showNameSelect");
+  searchSelectEl = createSelect(`Click for All Episodes`);
+  searchBarEl.appendChild(searchSelectEl);
+  //level 100 display of episode cards creation
+  showsEl = document.createElement("section");
+  showsEl.className = "showsEl";
+  rootElem.appendChild(showsEl);
+
+  showsSelectEl.addEventListener("change", function () {
+    if (this.value === "Click for All Shows") {
+      showEpisodes(episodeList);
+    } else {
+      let SHOW_ID = allShows[this.value].id;
+      let apiUrl = `https://api.tvmaze.com/shows/${SHOW_ID}/episodes`;
+      //https://developer.mozilla.org/en-US/docs/Web/API/HTMLOptionsCollection
+      searchSelectEl.options.length = 1;
+      getDataFromAPI(apiUrl);
+    }
+  });
+
   let apiUrl = `https://api.tvmaze.com/shows/527/episodes`;
   getDataFromAPI(apiUrl);
 
-  //level 400
+  //level 400 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
   allShows = getAllShows().sort((a, b) => {
     const nameA = a.name.toUpperCase(); // ignore upper and lowercase
     const nameB = b.name.toUpperCase(); // ignore upper and lowercase
@@ -52,7 +65,6 @@ function setup() {
     if (nameA > nameB) {
       return 1;
     }
-
     // names must be equal
     return 0;
   });
@@ -125,6 +137,7 @@ function makePageForEpisodes(episodeList) {
 
   //event listener for select element
   searchSelectEl.addEventListener("change", function () {
+    console.log(this.value);
     if (this.value === "Click for All Episodes") {
       showEpisodes(episodeList);
     } else {
